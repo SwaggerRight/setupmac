@@ -1,6 +1,21 @@
 ---
-# setup my macbook just the way I like it
+- name: Configure this Mac
+  hosts: localhost
+  connection: local
+  gather_facts: true
 
-- hosts: mac 
+  pre_tasks:
+    - name: Explain legacy migration status
+      ansible.builtin.debug:
+        msg: >-
+          The legacy setup role is disabled. Run scripts/inventory-mac.sh on
+          the current Mac, review its output, and then migrate approved items.
+      when: not (run_legacy_setup | bool)
+      tags:
+        - always
+
   roles:
-    - setup
+    - role: setup
+      when: run_legacy_setup | bool
+      tags:
+        - legacy

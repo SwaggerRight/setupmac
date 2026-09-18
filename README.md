@@ -1,34 +1,62 @@
-### Setupmac
+# setupmac
 
-This is a [Ansible](https://www.ansible.com/) playbook to quickly setup 
-a Mac to how I like it.
+An Ansible-based macOS setup project. This branch begins the migration from the
+original Intel-era configuration to a current Apple Silicon Mac.
 
-To setup run the following command :
+## Migration status
+
+The original `roles/setup` role is preserved, but it is disabled by default
+because its package and cask inventory requires review. The first step is to
+inventory the existing Intel Mac and use that output to build ARM-native roles
+and a reviewed `Brewfile` deliberately.
+
+## Inventory the current Intel Mac
+
+Clone this branch on the Mac you want to reproduce, then run:
+
+```bash
+./scripts/inventory-mac.sh
 ```
-curl -s https://raw.githubusercontent.com/daemonza/setupmac/master/start.sh | /bin/bash
+
+Output is written to a timestamped directory under `inventory-output/`, which
+is excluded from Git. In addition to package and preference data, the inventory
+creates `intel-only-applications.tsv` to identify apps that may require an
+Apple Silicon upgrade or Rosetta. Read the generated `REVIEW-ME.md` before
+sharing or committing any inventory data.
+
+You may choose a different output directory:
+
+```bash
+./scripts/inventory-mac.sh "$HOME/Desktop/mac-inventory"
 ```
 
-The start.sh script installs `pip` and then `ansible` with pip.
-Then git clone this repository and execute the `ansible` playbook which does
-all the heavy lifting of setting your mac.
+## Bootstrap the Apple Silicon Mac
 
-If you already have ansible installed or prefer running it directly, execure the following :
+After cloning this repository on the target Mac:
+
+```bash
+./bootstrap.sh
 ```
-ansible-playbook -i ./hosts playbook.yml --verbose
+
+The bootstrap script verifies Xcode Command Line Tools, installs Homebrew when
+needed, chooses `/opt/homebrew` on Apple Silicon or `/usr/local` on Intel,
+installs Git and Ansible, installs required collections, and runs the localhost
+playbook.
+
+Rosetta is not installed automatically. Prefer native Apple Silicon software;
+install Rosetta only if the reviewed inventory identifies a required Intel-only
+application with no native alternative.
+
+The legacy role is disabled until its contents have been reviewed and migrated.
+For inspection only, it can be explicitly selected with:
+
+```bash
+ansible-playbook playbook.yml --tags legacy -e run_legacy_setup=true
 ```
 
-The playbook use homebrew with cask to install most things. You can see a list of
-what get's installed at [here](https://raw.githubusercontent.com/daemonza/setupmac/master/roles/setup/vars/main.yml). If you want to change the list of applications, clone
-this repository, and edit this file, and run the `start.sh` script.
+Do not enable it on a new Mac yet. Several packages and casks are obsolete.
 
-The applications it cannot install through homebrew get's downloaded to
-`$HOME/Downloads`, it's up to you to install them from the Downloads directory.
+## Manual steps
 
-
-#### Uninstall
-
-If you want to undo all the changes that `setupmac` did, run 
-
-```
-start.sh uninstall
-```
+See [`docs/manual-steps.md`](docs/manual-steps.md) for settings that require
+interactive account sign-in or macOS Privacy & Security approval.

@@ -1,23 +1,22 @@
 ---
-# make sure homebrew is installed, update brew and install applications 
+# Legacy task retained during migration.
 
-- name: application installs
-  include: homebrew.yml
+- name: Application installs
+  ansible.builtin.include_tasks: homebrew.yml
 
-- name: getting downloads 
-  get_url:
-    url: "{{item.value.url}}"
-    dest: "{{item.value.dest}}"
-  with_dict: "{{downloads}}"    
+- name: Getting downloads
+  ansible.builtin.get_url:
+    url: "{{ item.value.url }}"
+    dest: "{{ item.value.dest }}"
+    mode: "0644"
+  loop: "{{ downloads | dict2items }}"
 
-- name: start installing homebrew applications
-  homebrew:
-    name: "{{item}}"
-    state: latest
-  with_items: "{{applications}}"
+- name: Install Homebrew formulae
+  community.general.homebrew:
+    name: "{{ applications }}"
+    state: present
 
-- name: start installing homebrew cask applications
-  homebrew_cask:
-    name: "{{item}}"
-    state: installed 
-  with_items: "{{cask_applications}}"
+- name: Install Homebrew cask applications
+  community.general.homebrew_cask:
+    name: "{{ cask_applications }}"
+    state: present

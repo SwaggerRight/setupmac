@@ -1,0 +1,4 @@
+---
+# The original role is retained for reference during migration. Its package
+# inventory is dated and should not run on a new Mac until it has been reviewed.
+run_legacy_setup: false

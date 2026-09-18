@@ -1,8 +1,9 @@
-- name: application installs
-  include: apps.yml 
+---
+- name: Application installs
+  ansible.builtin.include_tasks: apps.yml
 
-- name: configuration
-  include: configuration.yml
+- name: Configuration
+  ansible.builtin.include_tasks: configuration.yml
 
-- name: dotfiles
-  include: dotfiles.yml
+- name: Dotfiles
+  ansible.builtin.include_tasks: dotfiles.yml
