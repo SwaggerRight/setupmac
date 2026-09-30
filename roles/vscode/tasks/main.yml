@@ -1,0 +1,33 @@
+---
+- name: Check for Company Portal-installed Visual Studio Code
+  ansible.builtin.stat:
+    path: "{{ vscode_path }}"
+  register: vscode_binary
+
+- name: Read installed VS Code extensions
+  ansible.builtin.command:
+    argv:
+      - "{{ vscode_path }}"
+      - --list-extensions
+  register: installed_vscode_extensions
+  changed_when: false
+  when: vscode_binary.stat.exists
+
+- name: Install curated VS Code extensions
+  ansible.builtin.command:
+    argv:
+      - "{{ vscode_path }}"
+      - --install-extension
+      - "{{ item }}"
+  loop: "{{ vscode_extensions }}"
+  when:
+    - vscode_binary.stat.exists
+    - (item | lower) not in (installed_vscode_extensions.stdout_lines | map('lower') | list)
+  changed_when: true
+
+- name: Explain missing Visual Studio Code
+  ansible.builtin.debug:
+    msg: >-
+      Visual Studio Code is not installed yet. Install it from Company Portal,
+      then rerun the playbook with --tags vscode.
+  when: not vscode_binary.stat.exists

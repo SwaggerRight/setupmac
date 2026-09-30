@@ -7,9 +7,11 @@ September 30, 2026.
 
 - Top-level command-line, security, cloud, and development tools are installed
   from the native Apple Silicon Homebrew prefix (`/opt/homebrew`).
-- Current casks replace the old Intel copies of applications such as Docker,
-  Dropbox, KeePassXC, OBS, Signal, Spotify, VS Code, Webex, Zoom, and RingCentral.
-- VS Code extensions are curated to remove obsolete or Mac-inapplicable entries.
+- Current casks replace the old Intel copies of applications such as Dropbox,
+  KeePassXC, OBS, Signal, Spotify, Webex, Zoom, and RingCentral unless
+  an application is assigned through Company Portal.
+- VS Code extensions are curated by Ansible after the Company Portal version of
+  Visual Studio Code is installed.
 - Current Microsoft Graph and Exchange Online PowerShell modules replace the
   duplicate versions found on the Intel Mac.
 
@@ -82,6 +84,26 @@ Homebrew profile. Install it using the organization's Intune enrollment flow,
 sign in, finish registration, and let required applications install. If a
 company-managed application overlaps a Homebrew cask, exclude that cask from
 the personal baseline rather than allowing two systems to manage it.
+
+The following applications have been removed from Homebrew and App Store
+automation because they are available through Company Portal:
+
+- Brave Browser
+- Google Chrome
+- Docker Desktop
+- HyperTerminal
+- Meeting Owl
+- Microsoft 365 Apps for macOS
+- Microsoft Excel, OneNote, Outlook, PowerPoint, To Do, and Word
+- OneDrive
+- Orka Desktop
+- Python 3.x
+- Slack for Desktop
+- Visual Studio Code
+
+The explicit Homebrew `python@3.13` entry was removed. Homebrew may still install
+a private Python dependency required by Ansible or another formula; the
+user-facing corporate Python installation remains owned by Company Portal.
 
 ## PowerShell cleanup
 

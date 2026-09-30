@@ -27,3 +27,8 @@
       tags:
         - development
         - powershell
+
+    - role: vscode
+      tags:
+        - development
+        - vscode

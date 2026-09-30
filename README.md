@@ -6,8 +6,8 @@ Silicon M5 Pro.
 ## Migration status
 
 The reviewed baseline is now implemented with native Homebrew packages,
-current application casks, curated VS Code extensions, shell configuration,
-and current Microsoft administration PowerShell modules. The original
+current application casks, Company Portal-aware VS Code extension management,
+shell configuration, and current Microsoft administration PowerShell modules. The original
 `roles/setup` files remain only as migration history and are not called.
 
 ## Inventory the current Intel Mac
