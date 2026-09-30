@@ -5,17 +5,25 @@
   gather_facts: true
 
   pre_tasks:
-    - name: Explain legacy migration status
-      ansible.builtin.debug:
-        msg: >-
-          The legacy setup role is disabled. Run scripts/inventory-mac.sh on
-          the current Mac, review its output, and then migrate approved items.
-      when: not (run_legacy_setup | bool)
+    - name: Verify macOS
+      ansible.builtin.assert:
+        that:
+          - ansible_system == 'Darwin'
+        fail_msg: This playbook supports macOS only.
       tags:
         - always
 
   roles:
-    - role: setup
-      when: run_legacy_setup | bool
+    - role: homebrew
       tags:
-        - legacy
+        - homebrew
+        - applications
+
+    - role: shell
+      tags:
+        - shell
+
+    - role: powershell
+      tags:
+        - development
+        - powershell

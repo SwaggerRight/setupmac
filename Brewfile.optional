@@ -1,0 +1,7 @@
+# Native or universal applications that were present but are not baseline tools.
+cask "amazon-workspaces"
+cask "audacity"
+cask "blender"
+cask "gimp"
+cask "inkscape"
+cask "ultimaker-cura"

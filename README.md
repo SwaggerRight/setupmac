@@ -1,14 +1,14 @@
 # setupmac
 
-An Ansible-based macOS setup project. This branch begins the migration from the
-original Intel-era configuration to a current Apple Silicon Mac.
+An Ansible-based macOS setup project migrated from an Intel Mac to an Apple
+Silicon M5 Pro.
 
 ## Migration status
 
-The original `roles/setup` role is preserved, but it is disabled by default
-because its package and cask inventory requires review. The first step is to
-inventory the existing Intel Mac and use that output to build ARM-native roles
-and a reviewed `Brewfile` deliberately.
+The reviewed baseline is now implemented with native Homebrew packages,
+current application casks, curated VS Code extensions, shell configuration,
+and current Microsoft administration PowerShell modules. The original
+`roles/setup` files remain only as migration history and are not called.
 
 ## Inventory the current Intel Mac
 
@@ -40,23 +40,30 @@ After cloning this repository on the target Mac:
 
 The bootstrap script verifies Xcode Command Line Tools, installs Homebrew when
 needed, chooses `/opt/homebrew` on Apple Silicon or `/usr/local` on Intel,
-installs Git and Ansible, installs required collections, and runs the localhost
-playbook.
+installs Git and Ansible, applies the baseline Brewfile interactively, installs
+required collections, and runs the localhost playbook. The interactive
+Homebrew step allows package installers to request macOS administrator approval
+without putting a password in the repository.
 
-Rosetta is not installed automatically. Prefer native Apple Silicon software;
-install Rosetta only if the reviewed inventory identifies a required Intel-only
-application with no native alternative.
-
-The legacy role is disabled until its contents have been reviewed and migrated.
-For inspection only, it can be explicitly selected with:
+Rosetta is not installed automatically. Prefer native Apple Silicon software.
+Additional profiles can be enabled explicitly:
 
 ```bash
-ansible-playbook playbook.yml --tags legacy -e run_legacy_setup=true
+sudo -v
+ansible-playbook playbook.yml \
+  -e install_optional_apps=true \
+  -e install_virtualization_apps=true \
+  -e install_app_store_apps=true
 ```
 
-Do not enable it on a new Mac yet. Several packages and casks are obsolete.
+Rosetta-dependent applications have a separate
+`install_rosetta_apps=true` profile, which refuses to run until Rosetta has
+already been installed intentionally.
 
 ## Manual steps
 
 See [`docs/manual-steps.md`](docs/manual-steps.md) for settings that require
 interactive account sign-in or macOS Privacy & Security approval.
+
+See [`docs/migration-review.md`](docs/migration-review.md) for the Intel-to-M5
+software decisions, excluded legacy applications, and vendor-managed installs.

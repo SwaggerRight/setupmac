@@ -1,0 +1,69 @@
+---
+- name: Locate Homebrew
+  ansible.builtin.stat:
+    path: "{{ homebrew_prefix }}/bin/brew"
+  register: homebrew_binary
+
+- name: Verify Homebrew is installed in the native prefix
+  ansible.builtin.assert:
+    that:
+      - homebrew_binary.stat.exists
+      - homebrew_binary.stat.executable
+    fail_msg: >-
+      Homebrew was not found at {{ homebrew_prefix }}/bin/brew. Run
+      ./bootstrap.sh before invoking the playbook directly.
+
+- name: Apply baseline Brewfile
+  ansible.builtin.include_tasks: run_bundle.yml
+  vars:
+    brewfile_name: Brewfile
+
+- name: Apply optional application profile
+  ansible.builtin.include_tasks: run_bundle.yml
+  vars:
+    brewfile_name: Brewfile.optional
+  when: install_optional_apps | bool
+
+- name: Apply virtualization profile
+  ansible.builtin.include_tasks: run_bundle.yml
+  vars:
+    brewfile_name: Brewfile.virtualization
+  when: install_virtualization_apps | bool
+
+- name: Check whether Rosetta is installed
+  ansible.builtin.command:
+    argv:
+      - /usr/sbin/pkgutil
+      - --pkg-info
+      - com.apple.pkg.RosettaUpdateAuto
+  register: rosetta_check
+  changed_when: false
+  failed_when: false
+  when:
+    - ansible_architecture == 'arm64'
+    - install_rosetta_apps | bool
+    - require_rosetta_for_rosetta_apps | bool
+
+- name: Require explicit Rosetta installation
+  ansible.builtin.assert:
+    that:
+      - rosetta_check.rc == 0
+    fail_msg: >-
+      Rosetta applications were requested, but Rosetta is not installed. Review
+      docs/migration-review.md and install Rosetta explicitly before rerunning.
+  when:
+    - ansible_architecture == 'arm64'
+    - install_rosetta_apps | bool
+    - require_rosetta_for_rosetta_apps | bool
+
+- name: Apply Rosetta application profile
+  ansible.builtin.include_tasks: run_bundle.yml
+  vars:
+    brewfile_name: Brewfile.rosetta
+  when: install_rosetta_apps | bool
+
+- name: Apply Mac App Store profile
+  ansible.builtin.include_tasks: run_bundle.yml
+  vars:
+    brewfile_name: Brewfile.mas
+  when: install_app_store_apps | bool

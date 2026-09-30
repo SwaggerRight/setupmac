@@ -33,6 +33,12 @@ fi
 echo "Installing bootstrap dependencies..."
 brew install ansible git
 
+echo "Authorizing application installers..."
+sudo -v
+
+echo "Applying the baseline Brewfile..."
+brew bundle install --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
+
 echo "Installing Ansible collections..."
 ansible-galaxy collection install --upgrade -r "${SCRIPT_DIR}/requirements.yml"
 

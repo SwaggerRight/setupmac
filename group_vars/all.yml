@@ -1,4 +1,17 @@
 ---
-# The original role is retained for reference during migration. Its package
-# inventory is dated and should not run on a new Mac until it has been reviewed.
-run_legacy_setup: false
+homebrew_prefix: "{{ '/opt/homebrew' if ansible_architecture == 'arm64' else '/usr/local' }}"
+
+# Optional installation profiles. The baseline Brewfile is always applied.
+install_app_store_apps: false
+install_optional_apps: false
+install_virtualization_apps: false
+install_rosetta_apps: false
+
+# Rosetta is intentionally never installed automatically. If this is enabled,
+# the playbook verifies that Rosetta is already present before continuing.
+require_rosetta_for_rosetta_apps: true
+
+powershell_modules:
+  - ExchangeOnlineManagement
+  - Microsoft.Graph
+  - Microsoft.Graph.Beta

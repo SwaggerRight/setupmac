@@ -1,0 +1,20 @@
+---
+- name: Install current PowerShell administration modules
+  ansible.builtin.command:
+    argv:
+      - "{{ homebrew_prefix }}/bin/pwsh"
+      - -NoLogo
+      - -NoProfile
+      - -NonInteractive
+      - -Command
+      - >-
+        if (-not (Get-Module -ListAvailable -Name '{{ item }}')) {
+          Install-PSResource -Name '{{ item }}' -Scope CurrentUser
+          -TrustRepository -AcceptLicense;
+          Write-Output 'CHANGED:{{ item }}'
+        } else {
+          Write-Output 'PRESENT:{{ item }}'
+        }
+  loop: "{{ powershell_modules }}"
+  register: powershell_module_result
+  changed_when: "'CHANGED:' in powershell_module_result.stdout"

@@ -12,4 +12,7 @@ should not be forced by a personal Ansible playbook.
 - Approve required system extensions and network extensions.
 - Review `intel-only-applications.tsv` and install Rosetta only when a required
   application has no native Apple Silicon version.
+- Install corporate and vendor-managed software listed in
+  `docs/migration-review.md` through the appropriate MDM or vendor installer.
+- Sign in to the Mac App Store before enabling the `Brewfile.mas` profile.
 - Sign in to Microsoft 365, browsers, development tools, and other applications.

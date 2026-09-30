@@ -1,0 +1,24 @@
+---
+- name: Create user configuration directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ ansible_env.HOME }}/.config"
+      mode: "0755"
+    - path: "{{ ansible_env.HOME }}/.ssh"
+      mode: "0700"
+    - path: "{{ ansible_env.HOME }}/workspace"
+      mode: "0755"
+
+- name: Add native Homebrew to zsh environment
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zprofile"
+    create: true
+    mode: "0644"
+    marker: "# {mark} ANSIBLE MANAGED HOMEBREW"
+    block: |
+      if [[ -x "{{ homebrew_prefix }}/bin/brew" ]]; then
+        eval "$("{{ homebrew_prefix }}/bin/brew" shellenv)"
+      fi

@@ -1,0 +1,6 @@
+# These applications currently require Rosetta on Apple Silicon.
+# Enable only after explicitly installing Rosetta.
+cask "battle-net"
+cask "epic-games"
+cask "lightburn"
+cask "steam"

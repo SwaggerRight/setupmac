@@ -1,0 +1,4 @@
+# VirtualBox 7.2 has an Apple Silicon build, but Intel VMs cannot be migrated.
+# Use ARM64 guest boxes on the M5 Pro.
+cask "vagrant"
+cask "virtualbox"
