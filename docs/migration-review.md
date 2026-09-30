@@ -77,6 +77,12 @@ applied correctly:
 - Poly/Plantronics, Logitech, HP, and printer/scanner utilities
 - xTool Studio and licensed LightBurn configuration
 
+Company Portal was present on the Intel Mac, but it is not installed by a
+Homebrew profile. Install it using the organization's Intune enrollment flow,
+sign in, finish registration, and let required applications install. If a
+company-managed application overlaps a Homebrew cask, exclude that cask from
+the personal baseline rather than allowing two systems to manage it.
+
 ## PowerShell cleanup
 
 The Intel inventory contained several side-by-side Microsoft Graph versions and

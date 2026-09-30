@@ -3,6 +3,9 @@
 Some macOS security and account settings require explicit user approval and
 should not be forced by a personal Ansible playbook.
 
+- If this Mac will be company-managed, install Company Portal from the
+  organization's enrollment link, complete Intune enrollment, and install
+  required company applications before running the personal software profile.
 - Sign in to the Apple Account and select the desired iCloud services.
 - Sign in to the password manager before restoring credentials.
 - Configure Touch ID and Apple Pay.

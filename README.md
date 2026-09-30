@@ -46,19 +46,27 @@ Homebrew step allows package installers to request macOS administrator approval
 without putting a password in the repository.
 
 Rosetta is not installed automatically. Prefer native Apple Silicon software.
-Additional profiles can be enabled explicitly:
+Additional profiles can be enabled explicitly through the bootstrap script:
 
 ```bash
-sudo -v
-ansible-playbook playbook.yml \
-  -e install_optional_apps=true \
-  -e install_virtualization_apps=true \
-  -e install_app_store_apps=true
+./bootstrap.sh --with-optional --with-virtualization --with-app-store
 ```
 
-Rosetta-dependent applications have a separate
-`install_rosetta_apps=true` profile, which refuses to run until Rosetta has
-already been installed intentionally.
+Rosetta-dependent applications are skipped unless `--with-rosetta` is supplied.
+That option refuses to run until Rosetta has already been installed
+intentionally.
+
+## Safe reruns
+
+Running `./bootstrap.sh` again is expected and safe. Homebrew Bundle installs
+missing declared items without uninstalling unrelated software, Ansible updates
+only settings that differ, shell blocks are not duplicated, and existing
+PowerShell modules are retained. Use the same `--with-*` flags on a later run
+when you want those optional profiles checked and restored as well.
+
+The bootstrap may refresh Git, Ansible, and the Ansible collection itself, but
+the Brewfiles use `--no-upgrade`, so a rerun does not perform a wholesale
+application upgrade.
 
 ## Manual steps
 
