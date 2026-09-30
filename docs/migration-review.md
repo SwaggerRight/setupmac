@@ -89,6 +89,7 @@ The following applications have been removed from Homebrew and App Store
 automation because they are available through Company Portal:
 
 - Brave Browser
+- Bitdefender Virus Scanner
 - Google Chrome
 - Docker Desktop
 - HyperTerminal
